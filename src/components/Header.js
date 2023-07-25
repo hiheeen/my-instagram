@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import LiveChat from './LiveChat';
 const HeaderContainer = styled.header`
     // position: fixed;
     // right: 0;
@@ -60,6 +61,7 @@ function Header({ text, handleLogout }) {
                     </Column>
                     <Column>
                         <RightBox>
+                            {/* <LiveChat /> */}
                             <FontAwesomeIcon
                                 className="font"
                                 icon={faHome}

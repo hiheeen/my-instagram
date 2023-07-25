@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import Kakao from 'components/Kakao';
 import { REST_API_KEY, REDIRECT_URI } from 'components/KakaoLoginData';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
+import { useForm } from 'react-hook-form';
 // import ReactFacebookLogin from 'react-facebook-login';
 // import FaceBook from './FaceBook';
 const Container = styled.div`
@@ -63,6 +64,7 @@ const Button = styled.input`
     text-align: center;
     padding: 10px 0;
     font-weight: 600;
+    opacity: ${(props) => (props.disabled ? '0.5' : 1)};
 `;
 const Line = styled(WhiteBox)`
     height: 1px;
@@ -79,19 +81,37 @@ const LogIn = styled.button`
     padding: 10px 54px;
     font-weight: 600;
 `;
+const ErrorMessage = styled.p`
+    font-size: 8px;
+    color: red;
+`;
 
 function SignUp() {
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     const handleKakaoLogin = () => {
         setTimeout(() => {
             window.location.href = kakaoURL;
-        }, 1000);
+        }, 500);
 
         const code = new URL(window.location.href).searchParams.get('code');
         console.log('code', code);
         // axios.post('http://localhost:8000', code).then((res) => {
         //     //카카오 토큰 x 프로젝트 전용 토큰 -> 백엔드에서 넘겨줌
         // });
+    };
+    const {
+        register,
+        handleSubmit,
+        formState,
+        formState: { errors },
+    } = useForm();
+
+    const onSubmitValid = (data) => {
+        //API CALL
+        console.log('data valid', data);
+    };
+    const onSubmitInValid = (data) => {
+        console.log('data invalid', data);
     };
     return (
         <Container>
@@ -132,28 +152,91 @@ function SignUp() {
                         </span>
                         <Line />
                     </div>
-                    <form>
+                    <form
+                        onSubmit={handleSubmit(onSubmitValid, onSubmitInValid)}
+                    >
                         <Input
+                            id="phone"
                             type="text"
-                            name="username"
                             placeholder="휴대폰 번호 또는 이메일 주소"
+                            {...register('phone', {
+                                required: {
+                                    value: true,
+                                    message: 'phoneNumber is required',
+                                },
+                                minLength: {
+                                    value: 10,
+                                    message: '휴대폰 번호는 10글자 이상입니다',
+                                },
+                            })}
                         ></Input>
+                        {errors.phone && (
+                            <ErrorMessage role="alert">
+                                {errors?.phone?.message}
+                            </ErrorMessage>
+                        )}
                         <Input
+                            id="name"
                             type="text"
-                            name="name"
+                            // name="name"//register에서 대체
                             placeholder="성명"
+                            {...register('name', {
+                                required: {
+                                    value: true,
+                                    message: 'name is required',
+                                },
+                            })}
                         ></Input>
+                        {errors.name && (
+                            <ErrorMessage role="alert">
+                                {errors?.name?.message}
+                            </ErrorMessage>
+                        )}
                         <Input
+                            id="username"
                             type="text"
-                            name="username"
                             placeholder="사용자 이름"
+                            {...register('username', {
+                                required: {
+                                    value: true,
+                                    message: 'username is required',
+                                },
+                                minLength: {
+                                    value: 3,
+                                    message: '사용자 이름은 4글자 이상입니다',
+                                },
+                            })}
                         ></Input>
+                        {errors.username && (
+                            <ErrorMessage role="alert">
+                                {errors?.username?.message}
+                            </ErrorMessage>
+                        )}
                         <Input
+                            id="password"
                             type="password"
-                            name="password"
                             placeholder="비밀번호"
+                            {...register('password', {
+                                required: {
+                                    value: true,
+                                    message: 'password is required',
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: '비밀번호는 8글자 이상입니다',
+                                },
+                            })}
                         ></Input>
-                        <Button type="submit" value="가입"></Button>
+                        {errors.password && (
+                            <ErrorMessage role="alert">
+                                {errors?.password?.message}
+                            </ErrorMessage>
+                        )}
+                        <Button
+                            type="submit"
+                            value="가입"
+                            disabled={!formState.isValid}
+                        ></Button>
                     </form>
                 </TopBox>
 

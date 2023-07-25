@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { faMessage } from '@fortawesome/free-solid-svg-icons';
 import { REST_API_KEY, REDIRECT_URI } from 'components/KakaoLoginData';
+import { useState } from 'react';
 const Container = styled.div`
     //전체
     display: flex;
@@ -67,6 +68,9 @@ const Line = styled(WhiteBox)`
 `;
 
 function Login() {
+    // useState() : 컴포넌트에서 바뀌는 변수 또는 값을 관리해주는 함수
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     const handleKakaoLogin = () => {
         setTimeout(() => {
@@ -79,6 +83,21 @@ function Login() {
         //     //카카오 토큰 x 프로젝트 전용 토큰 -> 백엔드에서 넘겨줌
         // });
     };
+
+    const onChange = (e) => {
+        const { name, value } = e.currentTarget; //e.currentTarget 이라는 객체에 들어있을 name 과 value를
+        // name, value라는 변수에 할당한다.
+        console.log('name', name, 'value', value);
+
+        if (name === 'username') {
+            setUsername(value);
+        } else if (name === 'password') {
+            setPassword(value);
+        }
+    };
+    const onSubmit = (e) => {
+        e.preventDefault();
+    };
     return (
         <Container>
             <Helmet>
@@ -90,16 +109,20 @@ function Login() {
                         <FontAwesomeIcon icon={faInstagram} size="3x" />
                     </div>
 
-                    <form>
+                    <form onSubmit={onSubmit}>
                         <Input
                             type="text"
                             name="username"
                             placeholder="유저네임"
+                            onChange={onChange}
+                            required
                         ></Input>
                         <Input
                             type="password"
                             name="password"
                             placeholder="비밀번호"
+                            onChange={onChange}
+                            required
                         ></Input>
                         <Button type="submit" value="로그인 하기"></Button>
                     </form>

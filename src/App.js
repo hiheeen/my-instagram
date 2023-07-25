@@ -13,6 +13,7 @@ import { whiteTheme } from './styles';
 import { darkTheme } from './styles';
 import { HelmetProvider } from 'react-helmet-async'; //타이틀을 빠르게 구현할 수 있게 하는 라이브러리
 import Layout from './components/Layout';
+
 function App() {
     const [darkMode, setDarkMode] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
